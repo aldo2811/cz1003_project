@@ -18,43 +18,46 @@ def load_images():
     return map_img, pin_img, ok_button_img, ok_pressed_img
 
 
-def display_pin(pin_location, mouse):
+def get_user_location(user_location, mouse):
     """Displays an image of a location pin on the clicked area,
     and returns the coordinates of the 'dropped pin'.
 
     Args:
-        pin_location: coordinates of previous mouseclick on map area
+        user_location: coordinates of previous mouseclick on map area
         mouse: coordinates of current mouseclick
     
     Returns:
-        pin_location: coordinates of current mouseclick with adjustment
+        user_location: coordinates of current mouseclick with an adjustment
     """
     screen.blit(map_img, (0, 0))
-    screen.blit(ok_button_img, (ok_location[0], ok_location[1]))
+    screen.blit(ok_button_img, ok_location)
     # there's an offset of '-17' to adjust the pin image with the cursor
-    pin_location = [mouse[i] - 17 for i in range(2)]
-    screen.blit(pin_img, (pin_location[0], pin_location[1]))
-    return pin_location
+    user_location = [mouse[i] - 17 for i in range(2)]
+    screen.blit(pin_img, user_location)
+    return user_location
 
 
-# displays an image of a pressed button when the user clicks on the ok button
 def display_ok_pressed():
+    """Changes the ok button image to an image of a pressed ok button,
+    creating a real sense of clicking the button"""
     screen.blit(map_img, (0,0))
-    screen.blit(pin_img, (pin_location[0], pin_location[1]))
+    screen.blit(pin_img, user_location)
     screen.blit(ok_pressed_img, ok_location)
 
 
 def revert_display():
+    """Reverts display to the usual display with the normal ok button"""
     screen.blit(map_img, (0,0))
-    screen.blit(pin_img, (pin_location[0], pin_location[1]))
-    screen.blit(ok_button_img, (ok_location[0], ok_location[1]))
+    screen.blit(pin_img, user_location)
+    screen.blit(ok_button_img, ok_location)
 
 
 # initialize pygame program
 pygame.init()
-screen = pygame.display.set_mode((1600, 900))
+resolution = (1600, 900)
+screen = pygame.display.set_mode(resolution)
 pygame.display.set_caption('NTU F/B Recommendation')
-pin_location = (0, 0)
+user_location = (1600, 900)
 ok_location = (1250, 800)
 warning_location = (1050, 0)
 map_img, pin_img, ok_button_img, ok_pressed_img = load_images()
@@ -73,7 +76,6 @@ warning = False
 while running:
     for event in pygame.event.get():
         mouse = pygame.mouse.get_pos()
-
         # breaks the loop if the user exits the pygame program
         if event.type == pygame.QUIT:
             running = False
@@ -84,7 +86,7 @@ while running:
                 if mouse[0] < 1200 or mouse[1] < 750:
                     pin_dropped = True
                     warning = False
-                    pin_location = display_pin(pin_location, mouse)
+                    user_location = get_user_location(user_location, mouse)
                 # detects event of clicking the ok button
                 elif 1250 <= mouse[0] <= 1555 and 800 <= mouse[1] <= 885:
                     ok_button_clicked = True
@@ -121,3 +123,9 @@ while running:
 
 pygame.display.quit()
 pygame.quit()
+
+
+
+
+
+for i
