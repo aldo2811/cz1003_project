@@ -14,15 +14,15 @@ Red Loop
     13. Hall 11
 
 Blue Loop
-    1. Opposite Hall 23
-    2. Opposite Hall 14 & 15
-    3. Opposite Hall 3 & 16
-    4. Opposite Lee Wee Nam Library
-    5. Opposite CEE
-    6. Opposite WKW
-    7. SPMS
-    8. Opposite Innovation Centre
-    9. Opposite Hall 4 & 5
-    10. Hall 6
-    11. Opposite Hall 8 & 9
-    12. Opposite Hall 10 & 11
+    1. Opposite Hall 10 & 11
+    2. Opposite Hall 8 & 9
+    3. Hall 6
+    4. Opposite Hall 4 & 5
+    5. Opposite Innovation Centre
+    6. SPMS
+    7. Opposite WKW
+    8. Opposite CEE
+    9. Opposite Lee Wee Nam Library
+    10. Opposite Hall 3 & 16
+    11. Opposite Hall 14 & 15
+    12. Opposite Hall 23
