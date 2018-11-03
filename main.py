@@ -10,11 +10,11 @@ def load_images():
         ok_button_img: image of ok button
         ok_pressed_img: image of ok button when pressed
     """
-    map_img = pygame.image.load("map.png")
+    map_img = pygame.image.load("image_files/map.png")
     map_img = pygame.transform.scale(map_img, (1600, 900))          
-    pin_img = pygame.image.load("pin.png")
-    ok_button_img = pygame.image.load("ok_button.png")
-    ok_pressed_img = pygame.image.load("ok_button_pressed.png")
+    pin_img = pygame.image.load("image_files/pin.png")
+    ok_button_img = pygame.image.load("image_files/ok_button.png")
+    ok_pressed_img = pygame.image.load("image_files/ok_button_pressed.png")
     return map_img, pin_img, ok_button_img, ok_pressed_img
 
 
@@ -85,7 +85,7 @@ running = True
 ok_button_clicked = False
 pin_dropped = False
 warning = False
-
+running = True
 while running:
     for event in pygame.event.get():
         mouse = pygame.mouse.get_pos()
@@ -127,10 +127,10 @@ while running:
         print(event)
 
     pygame.display.flip()
-    if not running:
-        break
     # sets the frame rate of the pygame program
     clock.tick(fps)
-
 pygame.display.quit()
 pygame.quit()
+
+
+
