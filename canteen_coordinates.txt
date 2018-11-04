@@ -1,0 +1,12 @@
+Canteen 1,784,654
+Canteen 2,844,553
+Canteen 9,1034,363
+Canteen 11,1200,292
+Canteen 13,788,187
+Canteen 14,902,196
+Canteen 16,722,259
+North Hill Food Court,1243,380
+Foodgle Food Court,1125,217
+North Spine Food Court,496,370
+Koufu,412,689
+Quad Cafe,399,523

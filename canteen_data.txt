@@ -1,37 +1,42 @@
-canteen,X,Y,stall name,category,rating,menu1,price1...
-Canteen 1,784,654,Yong Tau Foo,Chinese,5,Wanton Seafood,5,Wanton Beehoon,4,Beans,3,Fried Tofu,4
-Canteen 1,784,654,Indian Food,Indian,3,Prata,3,Butter Chicken,4,Murtabak,5
-Canteen 1,784,654,Western Stall,Western,2,Cutlet,4,Chicken Chop,5,Pasta,5
-Canteen 2,844,553,Duck Waffles,Western,5,Chocolate Waffle,5,Peanut Waffle,4,Nutella Waffle,4
-Canteen 2,844,553,Xiao Long Bao,Chinese,4,Pork Dumpling,6,Plain Dumpling,3,Noodles,3
-Canteen 2,844,553,Chicken Rice,Singaporean,5,Lemon Chicken Rice,5,Roasted Chicken Rice,3,Steamed Chicken Rice,2
-Canteen 13,788,187,Mixed Rice,Chinese,3,Rice Bowl,4,Beans,3,Fried Eggplant,6
-Canteen 13,788,187,Western,Western,4,Carbonara,7,Chop Set,6,Fries,3
-Canteen 13,788,187,Indian,Indian,4,Curry,6,Rice Set,3,Paneer Curry,6
-Canteen 9,1034,363,Chinese Stall,Chinese,5,Stir Fried Rice,5,Honey Potato,6,Chilli Noodles,4
-Canteen 9,1034,363,Indian Stall,Chinese,3,Butter Chicken,6,Biryani,5,Prata,3
-Canteen 9,1034,363,Western,Western,3,Bacon Pasta,6,Cheesy Fries,4,Roast Chicken,5
-Canteen 11,1200,292,Chicken Rice,Singaporean,4,Lemon Chicken Rice,4,Roasted Chicken Rice,2,Steamed Chicken Rice,2
-Canteen 11,1200,292,Mixed Rice,Chinese,5,Rice Set,3,Beetroot Dish,4,Poached Egg,2
-Canteen 11,1200,292,Toast Box,Western,4,Kaya Toast,6,Bacon Omelette,7,Peanut Butter Sandwich,5
-Canteen 14,902,196,Korean Stall,Korean,4,Bibimbap,6,Hotplate Pork,6,Beef Bulgogi,5
-Canteen 14,902,196,Japanese Stall,Japanese,5,Katsu Curry,3,Oyako Don,4,Bento Box,5
-Canteen 14,902,196,Western Stall,Western,3,Chicken Pasta,7,Beef Burger,6,Enchiladas,7
-Canteen 16,722,259,Indian Stall,Indian,4,Aloo Parantha,6,Chapati Set,5,Biryani,4
-Canteen 16,722,259,Mala,Chinese,4,Noodle Set,6,Mild Mala,4,Spicy Mala,7
-Canteen 16,722,259,Western,Western,2,Baked Veg,4,Cheese Fries,3,Rosti,5
-North Hill Food Court,1243,380,Thai Food,Thai,3,Green Curry,6,Red Curry,5,Basil Chicken,4
-North Hill Food Court,1243,380,Chicken Rice,Singaporean,4,Chicken Rice,4,Soya Veg,3,Steamed Rice,4
-North Hill Food Court,1243,380,Korean Stall,Korean,4,Fish Bento,6,Chicken Bento,5,Pork Bento,7
-Foodgle Food Court,1125,217,Indian Stall,Indian,4,Prata,6,Chicken Biryani,6,Palak Paneer,5
-Foodgle Food Court,1125,217,Chinese Stall,Chinese,4,Sweet N Sour,8,Spicy Noodles,7,Pork Set,7
-Foodgle Food Court,1125,217,Waffle,Western,5,Icecream Waffle,3,Peanut Waffle,4,Chocochip Waffle,5
-North Spine Food Court,496,370,Chicken Rice,Singaporean,3,Lemon Chicken Rice,5,Roasted Chicken Rice,2,Steamed Chicken Rice,2
-North Spine Food Court,496,370,Western,Western,4,Carbonara,4,Porkchop Set,6,Roast Potatoes,3
-North Spine Food Court,496,370,Mixed Rice,Chinese,4,Rice Bowl,5,Veggies,3,Fried Eggplant,5
-Koufu,412,689,Mixed Rice,Chinese,4,Rice Set,6,Mixed Veggies,4,Fried Beans,6
-Koufu,412,689,Japanese Food,Japanese,5,Curry Rice,4,Egg Rice,4,Katsu Rice,6
-Koufu,412,689,Salad,Western,4,Chicken Salad,6,Caesar Salad,5,Mixed Salad,8
-Quad Cafe,399,523,Korean,Korean,3,Bulgogi,4,Kimchi Set,5,Hotplate Pork,7
-Quad Cafe,399,523,Toast Set,Western,3,Pancake,5,Waffles,7,Scrambled Eggs,4
-Quad Cafe,399,523,Western Stall,Western,3,Rosti,4,Bratwurst Set,6,Pork Wrap,7
+canteen,stall name,category,rating,menu1,price1...
+Canteen 1,Yong Tau Foo,Chinese,5,Wanton Seafood,5,Wanton Beehoon,4,Beans,3,Fried Tofu,4
+Canteen 1,Indian Food,Indian,3,Prata,3,Butter Chicken,4,Murtabak,5
+Canteen 1,Western Stall,Western,2,Cutlet,4,Chicken Chop,5,Pasta,5
+Canteen 2,Duck Waffles,Western,5,Chocolate Waffle,5,Peanut Waffle,4,Nutella Waffle,4
+Canteen 2,Xiao Long Bao,Chinese,4,Pork Dumpling,6,Plain Dumpling,3,Noodles,3
+Canteen 2,Chicken Rice,Singaporean,5,Lemon Chicken Rice,5,Roasted Chicken Rice,3,Steamed Chicken Rice,2
+Canteen 13,Mixed Rice,Chinese,3,Rice Bowl,4,Beans,3,Fried Eggplant,6
+Canteen 13,Western,Western,4,Carbonara,7,Chop Set,6,Fries,3
+Canteen 13,Indian,Indian,4,Curry,6,Rice Set,3,Paneer Curry,6
+Canteen 9,Chinese Stall,Chinese,5,Stir Fried Rice,5,Honey Potato,6,Chilli Noodles,4
+Canteen 9,Indian Stall,Chinese,3,Butter Chicken,6,Biryani,5,Prata,3
+Canteen 9,Western,Western,3,Bacon Pasta,6,Cheesy Fries,4,Roast Chicken,5
+Canteen 11,Chicken Rice,Singaporean,4,Lemon Chicken Rice,4,Roasted Chicken Rice,2,Steamed Chicken Rice,2
+Canteen 11,Mixed Rice,Chinese,5,Rice Set,3,Beetroot Dish,4,Poached Egg,2
+Canteen 11,Toast Box,Western,4,Kaya Toast,6,Bacon Omelette,7,Peanut Butter Sandwich,5
+Canteen 14,Korean Stall,Korean,4,Bibimbap,6,Hotplate Pork,6,Beef Bulgogi,5
+Canteen 14,Japanese Stall,Japanese,5,Katsu Curry,3,Oyako Don,4,Bento Box,5
+Canteen 14,Western Stall,Western,3,Chicken Pasta,7,Beef Burger,6,Enchiladas,7
+Canteen 16,Indian Stall,Indian,4,Aloo Parantha,6,Chapati Set,5,Biryani,4
+Canteen 16,Mala,Chinese,4,Noodle Set,6,Mild Mala,4,Spicy Mala,7
+Canteen 16,Western,Western,2,Baked Veg,4,Cheese Fries,3,Rosti,5
+North Hill Food Court,Thai Food,Others,3,Green Curry,6,Red Curry,5,Basil Chicken,4
+North Hill Food Court,Chicken Rice,Singaporean,4,Chicken Rice,4,Soya Veg,3,Steamed Rice,4
+North Hill Food Court,Korean Stall,Korean,4,Fish Bento,6,Chicken Bento,5,Pork Bento,7
+Foodgle Food Court,Indian Stall,Indian,4,Prata,6,Chicken Biryani,6,Palak Paneer,5
+Foodgle Food Court,Chinese Stall,Chinese,4,Sweet N Sour,8,Spicy Noodles,7,Pork Set,7
+Foodgle Food Court,Waffle,Western,5,Icecream Waffle,3,Peanut Waffle,4,Chocochip Waffle,5
+North Spine Food Court,Chicken Rice,Singaporean,3,Lemon Chicken Rice,5,Roasted Chicken Rice,2,Steamed Chicken Rice,2
+North Spine Food Court,Western,Western,4,Carbonara,4,Porkchop Set,6,Roast Potatoes,3
+North Spine Food Court,Mixed Rice,Chinese,4,Rice Bowl,5,Veggies,3,Fried Eggplant,5
+Koufu,Mixed Rice,Chinese,4,Rice Set,6,Mixed Veggies,4,Fried Beans,6
+Koufu,Japanese Food,Japanese,5,Curry Rice,4,Egg Rice,4,Katsu Rice,6
+Koufu,Salad,Western,4,Chicken Salad,6,Caesar Salad,5,Mixed Salad,8
+Quad Cafe,Korean,Korean,3,Bulgogi,4,Kimchi Set,5,Hotplate Pork,7
+Quad Cafe,Toast Set,Western,3,Pancake,5,Waffles,7,Scrambled Eggs,4
+Quad Cafe,Western Stall,Western,3,Rosti,4,Bratwurst Set,6,Pork Wrap,7
+North Spine Food Court,1,Halal,1,1,1.0
+Koufu,2,Chinese,2,2,2.0
+Canteen 1,3,Indian,3,3,3.0
+Canteen 2,4,Vegetarian,4,4,4.0,4,4.0
+North Spine Food Court,1,Seafood,5,pop,0.0
