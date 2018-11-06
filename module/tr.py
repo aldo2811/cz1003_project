@@ -1,9 +1,6 @@
-from operator import itemgetter
 import math
 import module.convert as convert
 
-
-#plan before coding, research
 
 #calculate distance
 def distance_a_b(location_of_a, location_of_b):
@@ -32,11 +29,13 @@ def sort_distance(user_location, database):
     sort_info = sorted(database.items(), key = lambda tup: tup[1][2])
     return convert.list_to_dict(sort_info)
 
+
 #itemcan only go by the surface level and hence maximum is 1
 #sort by rank
 def sort_by_rank(database):
     rank = sorted(database.items(), key = lambda tup: tup[1][0], reverse = True)
     return convert.list_to_dict(rank)
+
 
 #sort by category
 def sort_by_category(database):
@@ -44,43 +43,6 @@ def sort_by_category(database):
     return convert.list_to_dict(category)
 
 
-#sort by price
-#take out the price, put it to the front of the list
-#sort everything by the price
-#display
-
-
-
-     
-
-
-
-
-#for i,n in zip(list_dict, range(len(length))): use this to update for loops together
-#https://stackoverflow.com/questions/9038160/break-two-for-loops to break out 2 for loops
-
-
-
-
-#cannot use cause it will the prices will stick together to 1 canteen        
-##        assigned_list = [price_data[x:x+length[count]],i]
-##        assigned.append(assigned_list)
-##        x += length[count]
-##        count += 1
-##        print(assigned)
-##    return assigned
-
-
-##        for x in range(length[count]):  =====> cannot use this as once you set it in range, you cannot change it alr
-##            print(price_data[x])
-
-
-
-        
-  
-
-#not using sorted function because it cant sort dictionary, what a joke, convert to list previously for this matter
-#try to make the price at the subject
 def sort_by_price(database):
     sortedprice = sorted(database.items(), key=lambda tup: tup[1][1])
     return convert.list_to_dict(sortedprice)

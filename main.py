@@ -4,6 +4,7 @@ import module.tr as tr
 import module.data as data
 import module.search as search
 import module.check as check
+import module.transport as transport
 
 
 def load_images():
@@ -138,7 +139,10 @@ def pygame_main():
     
 
 def main_menu():
+    search_result = {}
+    back_to_location = False
     database = data.import_canteen_database()
+
     print("Welcome to the NTU F/B Recommendation System!")
     print("Please enter the input number that corresponds to the option you'd like to choose.", end = "\n\n")
     print("1: Search by price")
@@ -156,16 +160,18 @@ def main_menu():
         search_result = database
     elif user_option == 4:
         database_input()
-        main_menu()
+        return main_menu()
     else:
+        back_to_location = True
         return None
 
-    if search_result:
-        display_table(search_result)
-        menu_sort_selection(search_result)
-    else:
-        print("Not Found!")
-        main_menu()
+    if not back_to_location:
+        if search_result:
+            display_table(search_result)
+            menu_sort_selection(search_result)
+        else:
+            print("Not Found!")
+            return main_menu()
 
 
 def menu_price_search(database):
@@ -200,7 +206,7 @@ def menu_sort_selection(database):
         print("0: Back to main menu")
         user_option = check.user_input_index(0, 4)
         if user_option == 0:
-            return main_menu()
+            main_menu()
         elif user_option == 1:
             sorted_data = tr.sort_by_rank(database)
         elif user_option == 2:
@@ -238,11 +244,14 @@ def choose_canteen(database):
 
 def display_info(database, stall):
     key, value = stall
+    red_loop = data.get_bus_coordinates('red_loop')
+    blue_loop = data.get_bus_coordinates('blue_loop')
+    directions = transport.display_directions(key[1], user_location, red_loop, blue_loop)
     if value[2] == 0:
         value[2] = tr.distance_a_b(user_location, key[1])
     table = PrettyTable()
-    table.add_column('', ['Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price', 'Distance', 'Menu'])
-    table.add_column("Information", [key[0], key[2], key[3], value[0], value[1], value[2], value[3]])
+    table.add_column('', ['Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price', 'Distance', 'Menu', 'Directions'])
+    table.add_column('Information', [key[0], key[2], key[3], value[0], value[1], value[2], value[3], directions])
     print(table)
     print("0: Back to main menu")
     print("1: Back to canteen stall selection")
@@ -293,7 +302,7 @@ def menu_canteen_name():
     elif option == 10:
         canteen_name = "The Quad Cafe"
     elif option == 11:
-        canteen_name = "Canteen 4"
+        canteen_name = "Foodgle Food Court"
     elif option == 12:
         canteen_name = "North Hill Food Court"
        
@@ -367,7 +376,7 @@ def database_input():
         option = check.user_input_index(0, 1)
         if option == 1:
             data = ",".join(input_data())
-            with open("canteen_data.txt", "a") as csv_file:
+            with open("data/canteen_data.txt", "a") as csv_file:
                 csv_file.write("\n" + data)
         elif option == 0:
             break
