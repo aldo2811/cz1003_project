@@ -1,4 +1,10 @@
+"""database format: {(str, (int, int), str, str): [int, float, float, {str: float, str: float...}]}
+database key data format: (canteen_name, (canteen_location), stall_name, category)
+database value data format: [stall_rating, average_price, distance_to_user, {menu1: price1, menu2: price2...}]
+"""
+
 import csv
+import module.convert as convert
 
 
 def get_canteen_coordinates(canteen):
@@ -12,12 +18,13 @@ def get_canteen_coordinates(canteen):
 
 def import_canteen_database():
     database = {}
+    # initial distance is 0, will be updated when needed to show/compare distance
     distance = 0
-    with open('data/canteen_data.txt', mode = 'r') as csv_file:
+    with open('data/canteen_data.txt', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
-        line = 0
+        line = 1
         for row in csv_reader:
-            if line > 0:
+            if line > 1:
                 menus = {}
                 total_price = 0
                 for i in range(4, len(row), 2):
@@ -25,7 +32,8 @@ def import_canteen_database():
                     total_price += float(row[i + 1])
                 average_price = round(total_price / len(menus), 2)
                 X, Y = get_canteen_coordinates(row[0])
-                database[(row[0], (X, Y), row[1], row[2])] = [int(row[3]), average_price, distance, menus]
+                database[(row[0], (X, Y), row[1], row[2])] = [
+                    int(row[3]), average_price, distance, menus]
             line += 1
     return database
 
@@ -39,6 +47,13 @@ def get_bus_coordinates(bus_loop):
     return bus_coords_list
 
 
-red_loop = get_bus_coordinates('red_loop')
-blue_loop = get_bus_coordinates('blue_loop')
-#print(red_loop)
+def get_bus_nodes(bus_loop):
+    nodes_list = []
+    with open('data/' + bus_loop + '_nodes.txt', 'r') as csv_file:
+        nodes = csv.reader(csv_file)
+        line = 1
+        for node in nodes:
+            if line > 1:
+                nodes_list.append((int(node[0]), int(node[1])))
+            line += 1
+    return nodes_list

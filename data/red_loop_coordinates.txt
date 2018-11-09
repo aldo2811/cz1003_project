@@ -1,13 +1,13 @@
-Grad Hall & Hall 11,1244,246
-Hall 23,1110,203
-Hall 12 & 13,773,165
-Lee Wee Nam Library,593,355
-School of Biological Sciences,334,429
-School of Comms Studies,237,563
-Hall 7,260,763
-Innovation Centre,463,755
-Hall 4,652,801
-Hall 1,824,790
-Canteen 2,862,547
-Hall 8 & 9,995,429
-Hall 11,1204,346
+Grad Hall & Hall 11,1227,229
+Hall 23,1093,186
+Hall 12 & 13,756,148
+Lee Wee Nam Library,576,338
+School of Biological Sciences,317,412
+School of Comms Studies,220,546
+Hall 7,243,746
+Innovation Centre,446,738
+Hall 4,635,784
+Hall 1,807,773
+Canteen 2,845,530
+Hall 8 & 9,978,412
+Hall 11,1187,329
