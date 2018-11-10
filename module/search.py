@@ -1,3 +1,8 @@
+"""database format: {(str, (int, int), str, str): [int, float, float, {str: float, str: float...}]}
+database key data format: (canteen_name, (canteen_location), stall_name, category)
+database value data format: [stall_rating, average_price, distance_to_user, {menu1: price1, menu2: price2...}]
+"""
+
 import module.convert as convert
 
 

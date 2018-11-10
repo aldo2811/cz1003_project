@@ -7,10 +7,10 @@ def load_images():
     """Loads images.
 
     Returns:
-        map_img: image of NTU Map
-        pin_img: image of location pin
-        ok_button_img: image of ok button
-        ok_pressed_img: image of ok button when pressed
+        map_img: Image of NTU Map.
+        pin_img: Image of location pin.
+        ok_button_img: Image of ok button.
+        ok_pressed_img: Image of ok button when pressed.
     """
     map_img = pygame.image.load("image_files/map.png")
     map_img = pygame.transform.scale(map_img, (1600, 900))
@@ -21,6 +21,12 @@ def load_images():
 
 
 def load_text():
+    """Loads and renders text.
+
+    Returns:
+        warning_text: Warning text if user have not marked their location.
+        instruction_text: Instruction text for the pygame program.
+    """
     text_font = pygame.font.SysFont('calibri', 36)
     warning_text = text_font.render(
         'Please mark your location!', False, (255, 0, 0))
@@ -34,10 +40,10 @@ def get_user_location(mouse):
     and returns the coordinates of the 'dropped pin'.
 
     Args:
-        mouse ((x,y); list or tuple): coordinates of current mouseclick
+        mouse ((int, int) -> list or tuple): Coordinates of current mouseclick.
 
     Returns:
-        user_location ([x,y]; list): coordinates of current mouseclick with an adjustment
+        user_location ([int, int] -> list): Coordinates of current mouseclick with an adjustment.
     """
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
@@ -50,7 +56,11 @@ def get_user_location(mouse):
 
 def display_ok_pressed(user_location):
     """Changes the ok button image to an image of a pressed ok button,
-    creating a real sense of clicking the button"""
+    creating a real sense of clicking the button.
+    
+    Args:
+        user_location ((int, int) -> tuple): Location that is marked by the user.
+    """
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
     screen.blit(pin_img, user_location)
@@ -58,7 +68,11 @@ def display_ok_pressed(user_location):
 
 
 def revert_display(user_location):
-    """Reverts display to the usual display with the normal ok button"""
+    """Reverts display to the usual display with the normal ok button.
+    
+    Args:
+        user_location ((int, int) -> tuple): Location that is marked by the user.
+    """
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
     screen.blit(pin_img, user_location)
@@ -66,11 +80,21 @@ def revert_display(user_location):
 
 
 def display_warning(warning):
+    """Displays warning text.
+    
+    Args:
+        warning (bool): False if the user has marked location, otherwise True.
+    """
     if warning:
         screen.blit(warning_text, warning_location)
 
 
 def pygame_main():
+    """Main pygame interface function.
+
+    Returns:
+        user_location ((int, int) -> tuple): Location that is marked by the user, if the program is not force closed. 
+    """
     # use to set how fast the screen updates
     clock = pygame.time.Clock()
 

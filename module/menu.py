@@ -1,3 +1,8 @@
+"""database format: {(str, (int, int), str, str): [int, float, float, {str: float, str: float...}]}
+database key data format: (canteen_name, (canteen_location), stall_name, category)
+database value data format: [stall_rating, average_price, distance_to_user, {menu1: price1, menu2: price2...}]
+"""
+
 import module.check as check
 import module.convert as convert
 import module.data as data
@@ -20,7 +25,7 @@ def main_menu():
     """Main command line interface menu structure."""
     search_result = {}
     # imports canteen database from file
-    database = data.import_canteen_database()
+    database = data.import_canteen_database(user_location)
 
     print("\nWelcome to the NTU F/B Recommendation System!")
     print("Please enter the input number that corresponds to the option you'd like to choose.", end = "\n\n")
@@ -52,6 +57,14 @@ def main_menu():
 
 
 def price_search(database):
+    """Menu for searching by price.
+
+    Args:
+        database (dict): Canteen database.
+
+    Returns:
+        search_result (dict): Canteen database which only contains stalls that have an average price of less than the price specified by user.
+    """
     print("\nPlease enter the maximum price:", end = " ")
     price = check.user_input_float()
     search_result = search.by_price(database, price)
@@ -59,12 +72,26 @@ def price_search(database):
 
 
 def food_search(database):
+    """Menu for searching by category.
+
+    Args:
+        database (dict): Canteen database.
+    
+    Returns:
+        search_result (dict): Canteen database which only contains stalls which are the same category as specified by user. 
+    """
     category = input("Please enter the category: ")
     search_result = search.by_food(database, category)
     return search_result
 
 
 def sort_option():
+    """Asks user whether they want to sort or not.
+
+    Returns:
+        True if the user wants to sort, False otherwise.
+        Returns itself and keeps on asking for user input if it is invalid.
+    """
     sort_choice = input("\nSort?[Y/n] ").lower().strip()
     if sort_choice == "y":
         return True
@@ -75,6 +102,11 @@ def sort_option():
 
 
 def sort_selection(database):
+    """Menu for selecting which way to sort.
+    
+    Args:
+        database (dict): Canteen database.
+    """
     if sort_option():
         print("1: Sort by rank")
         print("2: Sort by distance")
@@ -92,6 +124,8 @@ def sort_selection(database):
             sorted_data = sort.by_price(database)
         elif user_option == 4:
             sorted_data = sort.by_category(database)
+
+        # display sorted database using table
         display_table(sorted_data)
         choose_canteen(sorted_data)
     else:
@@ -99,18 +133,32 @@ def sort_selection(database):
 
 
 def display_table(database):
+    """Displays the database in the form of table.
+
+    Args:
+        database (dict): Canteen database.
+    """
+    # table header row
     table = PrettyTable(['No.', 'Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price'])
     num = 0
     for key, value in database.items():
         num += 1
         table.add_row([num, key[0], key[2], key[3], value[0], value[1]])
-    print("\nSearch Results\n", table)
+    print("\nSearch Results\n")
+    print(table)
 
 
 def choose_canteen(database):
+    """Asks the user to choose a canteen stall from the table.
+
+    Args:
+        database (dict): Canteen database.
+    """
     list_canteen = list(database.items())
     print("Enter a number to choose a canteen stall")
     print("0: Back to main menu")
+
+    # the number options are displayed on the table
     user_option = check.user_input_index(0, len(list_canteen))
     if user_option > 0:
         stall = list_canteen[user_option - 1]
@@ -120,18 +168,28 @@ def choose_canteen(database):
 
 
 def display_info(database, stall):
+    """Displays information of stall in the form of table.
+
+    Args:
+        database (dict): Canteen database.
+        stall ((key, value) -> tuple): Data of a stall. Format is similar to database but type is tuple.
+    """
     key, value = stall
-    red_loop = data.get_bus_coordinates('red_loop')
-    blue_loop = data.get_bus_coordinates('blue_loop')
-    distance = display_distance(value[2], key[1])
+
+    # format data for display
+    avg_price = convert.float_to_dollar(value[1])
+    distance = convert.pixel_to_meter(value[2])
+    distance = " ".join([str(distance), "m"])
     menu = display_food_menu(value[3])
-    directions = transport.display_directions(key[1], user_location, red_loop, blue_loop)
+    directions = transport.display_directions(key[1], user_location)
+
     table = PrettyTable()
     table.add_column('', ['Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price', 'Distance', 'Menu', 'Directions'])
-    table.add_column('Information', [key[0], key[2], key[3], value[0], value[1], distance, menu, directions])
+    table.add_column('Information', [key[0], key[2], key[3], value[0], avg_price, distance, menu, directions])
     print(table)
     print("0: Back to main menu")
     print("1: Back to canteen stall selection")
+
     user_option = check.user_input_index(0, 1)
     if user_option == 0:
         main_menu()
@@ -141,15 +199,16 @@ def display_info(database, stall):
 
 
 def display_food_menu(food_menu):
+    """Formats the menu information to be displayed on the stall information.
+
+    Args:
+        food_menu ({str: float} -> dict): A dictionary that contains the stall's food and their prices
+    
+    Returns:
+        str: Formatted string of the stall menu.
+    """
     str_list = []
     for food, price in food_menu.items():
         price = convert.float_to_dollar(price)
         str_list.extend([food, ": ", price, "\n"])
     return "".join(str_list)
-
-
-def display_distance(distance, canteen_location):
-    if distance == 0:
-        distance = transport.distance_a_b(user_location, canteen_location)
-        distance = convert.pixel_to_meter(distance)
-    return " ".join([str(distance), "m"])

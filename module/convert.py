@@ -1,5 +1,5 @@
 def list_to_dict(lst):
-    """Converts list into dictionary (Specific format).
+    """Converts list into dictionary (database format).
 
     Args:
         lst (List): List format: [tuple, tuple].
@@ -30,6 +30,14 @@ def pixel_to_meter(distance_in_pixel):
 
 
 def float_to_dollar(value):
+    """Converts float into dollar formatting.
+    
+    Args:
+        value (float): The value to be converted.
+    
+    Returns:
+        str: Value in dollar formatting. (e.g. '$5.00')
+    """
     str_list = ["$"]
     value = "{:.2f}".format(float(value))
     str_list.append(value)

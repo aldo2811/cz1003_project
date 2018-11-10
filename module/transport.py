@@ -8,20 +8,29 @@ def distance_a_b(location_of_a, location_of_b):
     """Finds the straight distance between two points.
 
     Args:
-        location_of_a ((x, y); list or tuple): Location of first point.
-        location_of_b ((x, y); list or tuple): Location of second point.
+        location_of_a ((x, y) -> list or tuple): Location of first point.
+        location_of_b ((x, y) -> list or tuple): Location of second point.
 
     Returns:
         distance_a_b (float): Distance between the two points (distance is measured in pixels).
     """
     distance_a_b = math.sqrt(
-        (location_of_a[0]-location_of_b[0])**2 + (location_of_a[1] - location_of_b[1])**2)
+        (location_of_a[0] - location_of_b[0]) ** 2 + (location_of_a[1] - location_of_b[1]) ** 2)
     return distance_a_b
 
 
-def nearest_bus_stop(location, bus_stop_list):
+def nearest_bus_stop(location, bus_stop_coords):
+    """Finds the nearest bus stop to the specified location.
+
+    Args:
+        Location ((int, int) -> tuple): Coordinates on the map.
+        bus_stop_coords ([[str, (int, int)]] -> list): List of bus stops and its coordinates.
+
+    Returns:
+        nearest ([str, float] -> list): A list which contains the nearest bus stop and distance to the specified location.
+    """
     nearest = [None, float("inf")]
-    for bus_stop, coordinates in bus_stop_list:
+    for bus_stop, coordinates in bus_stop_coords:
         distance = distance_a_b(location, coordinates)
         if distance < nearest[1]:
             nearest = [bus_stop, distance]  # only if lower
@@ -29,6 +38,9 @@ def nearest_bus_stop(location, bus_stop_list):
 
 
 def route(bus_stop_coords, start, end):
+    """
+
+    """
     bus_stops = [i[0] for i in bus_stop_coords]
     start_index = bus_stops.index(start)
     end_index = bus_stops.index(end)
@@ -40,12 +52,12 @@ def route(bus_stop_coords, start, end):
     return bus_route
 
 
-def directions(canteen_location, user_location, distance_user_canteen, bus_stop_list):
+def directions(canteen_location, user_location, distance_user_canteen, bus_stop_coords):
     nearest_bus_stop_canteen, distance_bus_stop_canteen = nearest_bus_stop(
-        canteen_location, bus_stop_list)
+        canteen_location, bus_stop_coords)
     nearest_bus_stop_user, distance_bus_stop_user = nearest_bus_stop(
-        user_location, bus_stop_list)
-    bus_route = route(bus_stop_list, nearest_bus_stop_user,
+        user_location, bus_stop_coords)
+    bus_route = route(bus_stop_coords, nearest_bus_stop_user,
                       nearest_bus_stop_canteen)
     if distance_user_canteen <= distance_bus_stop_user or len(bus_route) <= 1:
         walk = True
@@ -67,7 +79,11 @@ def display_route(bus_route, walk_distance):
     return str_list
 
 
-def display_directions(canteen_location, user_location, red_loop, blue_loop):
+def display_directions(canteen_location, user_location):
+    # get data of red and blue bus stop coordinates
+    red_loop = data.get_bus_coordinates('red')
+    blue_loop = data.get_bus_coordinates('blue')
+
     distance_user_canteen = distance_a_b(user_location, canteen_location)
     red_walk, red_route = directions(
         canteen_location, user_location, distance_user_canteen, red_loop)
@@ -76,7 +92,9 @@ def display_directions(canteen_location, user_location, red_loop, blue_loop):
 
     str_header = ("Recommended Routes\n")
     if red_walk or blue_walk:
-        return (str_header + "You are near to the canteen. Walk straight ahead. (", str(distance_user_canteen), ")")
+        distance_meters = convert.pixel_to_meter(distance_user_canteen)
+        str_list = [str_header, "\nYou are near to the canteen. Walk straight ahead. (", str(
+            distance_meters), " m)"]
     else:
         red_bus_distance = bus_distance(red_route, 'red')
         blue_bus_distance = bus_distance(blue_route, 'blue')
@@ -92,17 +110,17 @@ def display_directions(canteen_location, user_location, red_loop, blue_loop):
             str_list.append("\nBlue Loop\n\n")
             str_list.extend(display_route(blue_route, blue_walk_distance))
             str_list.extend(["\nTotal bus distance: ",
-                             str(blue_bus_distance), " meters"])
+                             str(blue_bus_distance), " m"])
             str_list.extend(["\nTotal travel distance: ",
-                             str(blue_travel_distance), " meters"])
+                             str(blue_travel_distance), " m"])
         if len(red_route) <= len(blue_route) + 1:
             str_list.append("\nRed Loop\n\n")
             str_list.extend(display_route(red_route, red_walk_distance))
             str_list.extend(["\nTotal bus distance: ",
-                             str(red_bus_distance), " meters"])
+                             str(red_bus_distance), " m"])
             str_list.extend(["\nTotal travel distance: ",
-                             str(red_travel_distance), " meters"])
-        return "".join(str_list)
+                             str(red_travel_distance), " m"])
+    return "".join(str_list)
 
 
 def get_route_nodes(bus_route, loop):

@@ -1,37 +1,22 @@
-# for database formatting, please refer to module/data.py
+"""database format: {(str, (int, int), str, str): [int, float, float, {str: float, str: float...}]}
+database key data format: (canteen_name, (canteen_location), stall_name, category)
+database value data format: [stall_rating, average_price, distance_to_user, {menu1: price1, menu2: price2...}]
+"""
 
 import module.convert as convert
 import module.transport as transport
-
-
-def assign_dist(user_location, database):
-    """Assigns distance from user to each canteen to the database.
-
-    Args:
-        user_location ((x, y); tuple): Location that user marked on the map.
-        database (dict): Canteen database.
-
-    Returns:
-        database (dict): Canteen database that has been assigned with the distance to user.
-    """
-    list_dict = list(database.keys())
-    for i in list_dict:
-        current_dist = transport.distance_a_b(user_location, i[1])
-        database[i][2] = convert.pixel_to_meter(current_dist)
-    return database
 
 
 def by_distance(user_location, database):
     """Sorts the database by distance, from the nearest to furthest from user.
 
     Args:
-        user_location ((x, y); tuple): Location that user marked on the map.
+        user_location ((x, y) -> tuple): Location that user marked on the map.
         database (dict): Canteen database.
 
     Returns:
         dict: Canteen database that has been sorted by distance to user.
     """
-    database = assign_dist(user_location, database)
     # tup[1][2] refers to distance from canteen to user
     sort_info = sorted(database.items(), key=lambda tup: tup[1][2])
     return convert.list_to_dict(sort_info)
@@ -61,6 +46,7 @@ def by_category(database):
     Returns:
         dict: Canteen database that has been sorted by category.
     """
+    # tup[0][3] refers to category
     category = sorted(database.items(), key=lambda tup: tup[0][3])
     return convert.list_to_dict(category)
 
@@ -74,5 +60,6 @@ def by_price(database):
     Returns:
         dict: Canteen database that has been sorted by price.
     """
+    # tup[1][1] refers to average price
     sortedprice = sorted(database.items(), key=lambda tup: tup[1][1])
     return convert.list_to_dict(sortedprice)
