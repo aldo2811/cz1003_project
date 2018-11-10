@@ -4,8 +4,8 @@ database value data format: [stall_rating, average_price, distance_to_user, {men
 """
 
 import csv
-import module.convert as convert
-import module.transport as transport
+import math
+
 
 def get_canteen_coordinates(canteen):
     """Gets the coordinates of a canteen from file.
@@ -25,11 +25,26 @@ def get_canteen_coordinates(canteen):
         return int(X), int(Y)
 
 
+def distance_a_b(location_of_a, location_of_b):
+    """Finds the straight distance between two points.
+
+    Args:
+        location_of_a ((x, y) -> list or tuple): Location of first point.
+        location_of_b ((x, y) -> list or tuple): Location of second point.
+
+    Returns:
+        distance_a_b (float): Distance between the two points (distance is measured in pixels).
+    """
+    distance_a_b = math.sqrt(
+        (location_of_a[0] - location_of_b[0]) ** 2 + (location_of_a[1] - location_of_b[1]) ** 2)
+    return distance_a_b
+
+
 def import_canteen_database(user_location):
     """Gets the canteen database from file.
 
     Args:
-        user_location ((int, int) -> tuple): Location that is marked by the user.
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
     
     Returns:
         database (dict): Canteen database.
@@ -44,7 +59,7 @@ def import_canteen_database(user_location):
                 menus = {}
                 total_price = 0
                 X, Y = get_canteen_coordinates(row[0])
-                distance = transport.distance_a_b(user_location, (X, Y))
+                distance = distance_a_b(user_location, (X, Y))
                 for i in range(4, len(row), 2):
                     menus[row[i]] = float(row[i + 1])
                     total_price += float(row[i + 1])
@@ -74,7 +89,7 @@ def get_bus_coordinates(bus_loop):
 
 
 def get_bus_nodes(bus_loop):
-    """Gets data of bus route nodes coordinates from file.
+    """Gets data of bus route node's coordinates from file.
 
     Args:
         bus_loop (str): 'red' or 'blue' depending on the loop. Use this for the file name.

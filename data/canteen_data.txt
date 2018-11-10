@@ -35,4 +35,3 @@ Koufu,Salad,Western,4,Chicken Salad,6,Caesar Salad,5,Mixed Salad,8
 Quad Cafe,Korean,Korean,3,Bulgogi,4,Kimchi Set,5,Hotplate Pork,7
 Quad Cafe,Toast Set,Western,3,Pancake,5,Waffles,7,Scrambled Eggs,4
 Quad Cafe,Western Stall,Western,3,Rosti,4,Bratwurst Set,6,Pork Wrap,7
-Canteen 9,indian,Vegetarian,4,prata,6.0

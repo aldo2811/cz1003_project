@@ -59,7 +59,7 @@ def display_ok_pressed(user_location):
     creating a real sense of clicking the button.
     
     Args:
-        user_location ((int, int) -> tuple): Location that is marked by the user.
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
     """
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
@@ -71,7 +71,7 @@ def revert_display(user_location):
     """Reverts display to the usual display with the normal ok button.
     
     Args:
-        user_location ((int, int) -> tuple): Location that is marked by the user.
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
     """
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
@@ -93,7 +93,7 @@ def pygame_main():
     """Main pygame interface function.
 
     Returns:
-        user_location ((int, int) -> tuple): Location that is marked by the user, if the program is not force closed. 
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user, if the program is not force closed. 
     """
     # use to set how fast the screen updates
     clock = pygame.time.Clock()

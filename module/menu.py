@@ -119,7 +119,7 @@ def sort_selection(database):
         elif user_option == 1:
             sorted_data = sort.by_rank(database)
         elif user_option == 2:
-            sorted_data = sort.by_distance(user_location, database)
+            sorted_data = sort.by_distance(database)
         elif user_option == 3:
             sorted_data = sort.by_price(database)
         elif user_option == 4:
@@ -139,11 +139,13 @@ def display_table(database):
         database (dict): Canteen database.
     """
     # table header row
-    table = PrettyTable(['No.', 'Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price'])
+    table = PrettyTable(['No.', 'Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price', 'Distance'])
     num = 0
     for key, value in database.items():
         num += 1
-        table.add_row([num, key[0], key[2], key[3], value[0], value[1]])
+        distance = convert.pixel_to_meter(value[2])
+        distance = "".join([str(distance), " m"])
+        table.add_row([num, key[0], key[2], key[3], value[0], value[1], distance])
     print("\nSearch Results\n")
     print(table)
 
@@ -181,7 +183,7 @@ def display_info(database, stall):
     distance = convert.pixel_to_meter(value[2])
     distance = " ".join([str(distance), "m"])
     menu = display_food_menu(value[3])
-    directions = transport.display_directions(key[1], user_location)
+    directions = transport.display_directions(stall, user_location)
 
     table = PrettyTable()
     table.add_column('', ['Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price', 'Distance', 'Menu', 'Directions'])

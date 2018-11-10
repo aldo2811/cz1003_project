@@ -4,14 +4,12 @@ database value data format: [stall_rating, average_price, distance_to_user, {men
 """
 
 import module.convert as convert
-import module.transport as transport
 
 
-def by_distance(user_location, database):
+def by_distance(database):
     """Sorts the database by distance, from the nearest to furthest from user.
 
     Args:
-        user_location ((x, y) -> tuple): Location that user marked on the map.
         database (dict): Canteen database.
 
     Returns:
