@@ -11,11 +11,15 @@ import module.search as search
 import module.sort as sort
 import module.transport as transport
 from library.prettytable import PrettyTable
+import sys
 
 
 def import_user_location(location):
     """Imports user_location from the main file (main.py).
     Declares it as a global variable in this file to ease things.
+
+    Args:
+        location ((int, int) -> tuple): Location that is marked by user.
     """
     global user_location
     user_location = location
@@ -33,9 +37,11 @@ def main_menu():
     print("2: Search by food (category)")
     print("3: Display all")
     print("4: Edit canteen database")
-    print("0: Back to location selection")
+    print("5: Back to location selection")
+    print("0: Quit program")
 
-    user_option = check.user_input_index(0, 4)
+    # ask user for input, digit from 0-5
+    user_option = check.user_input_index(0, 5)
     if user_option == 1:
         search_result = price_search(database)
     elif user_option == 2:
@@ -43,10 +49,14 @@ def main_menu():
     elif user_option == 3:
         search_result = database
     elif user_option == 4:
-        data_input.database_input()
+        data_input.menu_edit_database()
         return main_menu()
-    else:
+    elif user_option == 5:
+        # goes back to main loop, and run the pygame program
         return None
+    else:
+        # exit python
+        sys.exit(0)
 
     if search_result:
         display_table(search_result)
@@ -80,7 +90,9 @@ def food_search(database):
     Returns:
         search_result (dict): Canteen database which only contains stalls which are the same category as specified by user. 
     """
-    category = input("Please enter the category: ")
+    print("\nPlease enter the category:", end = " ")
+    # category cannot be empty
+    category = check.non_empty_input()
     search_result = search.by_food(database, category)
     return search_result
 
@@ -92,12 +104,13 @@ def sort_option():
         True if the user wants to sort, False otherwise.
         Returns itself and keeps on asking for user input if it is invalid.
     """
-    sort_choice = input("\nSort?[Y/n] ").lower().strip()
+    sort_choice = input("\nSort?[Y/N] ").lower().strip()
     if sort_choice == "y":
         return True
     elif sort_choice == "n":
         return False
     else:
+        print("Invalid input!")
         return sort_option()
 
 
@@ -113,6 +126,7 @@ def sort_selection(database):
         print("3: Sort by price")
         print("4: Sort by category")
         print("0: Back to main menu")
+        
         user_option = check.user_input_index(0, 4)
         if user_option == 0:
             main_menu()
@@ -143,24 +157,30 @@ def display_table(database):
     num = 0
     for key, value in database.items():
         num += 1
+
+        # formatting for display purposes
         distance = convert.pixel_to_meter(value[2])
         distance = "".join([str(distance), " m"])
-        table.add_row([num, key[0], key[2], key[3], value[0], value[1], distance])
+        average_price = convert.float_to_dollar(value[1])
+
+        table.add_row([num, key[0], key[2], key[3], value[0], average_price, distance])
     print("\nSearch Results\n")
     print(table)
 
 
 def choose_canteen(database):
     """Asks the user to choose a canteen stall from the table.
+    The number options are displayed on the table.
 
     Args:
         database (dict): Canteen database.
     """
     list_canteen = list(database.items())
-    print("Enter a number to choose a canteen stall")
+    print("Enter the corresponding number of a stall to choose it.")
     print("0: Back to main menu")
 
-    # the number options are displayed on the table
+    # allows inputs ranging from 0, to go back to main menu,
+    # until the last number of canteen stall
     user_option = check.user_input_index(0, len(list_canteen))
     if user_option > 0:
         stall = list_canteen[user_option - 1]
@@ -178,14 +198,16 @@ def display_info(database, stall):
     """
     key, value = stall
 
-    # format data for display
+    # format data for display purposes
     avg_price = convert.float_to_dollar(value[1])
     distance = convert.pixel_to_meter(value[2])
     distance = " ".join([str(distance), "m"])
     menu = display_food_menu(value[3])
     directions = transport.display_directions(stall, user_location)
 
+    # create table object
     table = PrettyTable()
+    # table header is on the leftmost column
     table.add_column('', ['Canteen', 'Stall Name', 'Category', 'Rating', 'Average Price', 'Distance', 'Menu', 'Directions'])
     table.add_column('Information', [key[0], key[2], key[3], value[0], avg_price, distance, menu, directions])
     print(table)
@@ -196,6 +218,7 @@ def display_info(database, stall):
     if user_option == 0:
         main_menu()
     elif user_option == 1:
+        # go back to table of all stalls
         display_table(database)
         choose_canteen(database)
 
@@ -207,7 +230,7 @@ def display_food_menu(food_menu):
         food_menu ({str: float} -> dict): A dictionary that contains the stall's food and their prices
     
     Returns:
-        str: Formatted string of the stall menu.
+        str: Formatted string of the stall menu. (e.g. 'Chicken Rice: $3.00')
     """
     str_list = []
     for food, price in food_menu.items():

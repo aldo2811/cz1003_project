@@ -1,6 +1,8 @@
 from library.prettytable import PrettyTable
 import pygame
+import sys
 import module.menu as menu
+import module.data as data
 
 
 def load_images():
@@ -27,11 +29,9 @@ def load_text():
         warning_text: Warning text if user have not marked their location.
         instruction_text: Instruction text for the pygame program.
     """
-    text_font = pygame.font.SysFont('calibri', 36)
-    warning_text = text_font.render(
-        'Please mark your location!', False, (255, 0, 0))
-    instruction_text = text_font.render(
-        'Please mark your location and click the ok button to continue.', False, (0, 0, 0))
+    instruction_font = pygame.font.SysFont('calibri', 36)
+    warning_text = instruction_font.render('Please mark your location!', False, (255, 0, 0))
+    instruction_text = instruction_font.render('Please mark your location and click the ok button to continue.', False, (0, 0, 0))
     return warning_text, instruction_text
 
 
@@ -45,12 +45,14 @@ def get_user_location(mouse):
     Returns:
         user_location ([int, int] -> list): Coordinates of current mouseclick with an adjustment.
     """
+    user_location = mouse
+    # there's an offset of '-16' to adjust the pin image with the cursor
+    display_location = [user_location[i] - 16 for i in range(2)]
+
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
     screen.blit(ok_button_img, ok_location)
-    # there's an offset of '-17' to adjust the pin image with the cursor
-    user_location = [mouse[i] - 17 for i in range(2)]
-    screen.blit(pin_img, user_location)
+    screen.blit(pin_img, display_location)
     return user_location
 
 
@@ -61,9 +63,12 @@ def display_ok_pressed(user_location):
     Args:
         user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
     """
+    # display adjustment
+    display_location = [user_location[i] - 16 for i in range(2)]
+
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
-    screen.blit(pin_img, user_location)
+    screen.blit(pin_img, display_location)
     screen.blit(ok_pressed_img, ok_location)
 
 
@@ -73,9 +78,12 @@ def revert_display(user_location):
     Args:
         user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
     """
+    # display adjustment
+    display_location = [user_location[i] - 16 for i in range(2)]
+
     screen.blit(map_img, background_location)
     screen.blit(instruction_text, instruction_location)
-    screen.blit(pin_img, user_location)
+    screen.blit(pin_img, display_location)
     screen.blit(ok_button_img, ok_location)
 
 
@@ -89,7 +97,61 @@ def display_warning(warning):
         screen.blit(warning_text, warning_location)
 
 
-def pygame_main():
+def display_popup(coordinates):
+    """Displays pop-up box.
+    
+    Args:
+        coordinates ((int, int) -> tuple): Canteen coordinates.
+    """
+    x, y = coordinates
+    pygame.draw.rect(screen, (0, 0, 150), [x-60, y-30, 120, 20])
+
+
+def display_popup_text(canteen, coordinates):
+    """Displays canteen name on the pop-up box.
+    
+    Args:
+        canteen (str): Canteen name.
+        coordinates ((int, int) -> tuple): Canteen coordinates.
+    """
+    x, y = coordinates
+    # create font object of pop-up
+    # initialize only when needed, to prevent it from causing errors
+    popup_font = pygame.font.SysFont('calibri', 12)
+    popup_text = popup_font.render(canteen, False, (255, 255, 255))
+
+    # assign center location of text to align it with the pop-up box
+    text_rect = popup_text.get_rect()
+    text_rect.center = (x, y - 20)
+    screen.blit(popup_text, text_rect)
+
+
+def detect_point_hover(user_location, mouse, ok_button_clicked, warning):
+    """Detects event of user hovering their mouse cursor over the canteen locations / points.
+
+    Args:
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by user.
+        mouse ((int, int) -> tuple): Current coordinates of mouse cursor.
+        ok_button_clicked (bool): True if ok button is being clicked, otherwise False.
+        warning (bool): True if user clicks ok button but has not marked their location, otherwise False.
+    """
+    # no need to check if ok button is clicked
+    if not ok_button_clicked:
+        # check every canteen's location / point
+        for canteen, xy in canteen_coordinates:
+            # size of each canteen point is 16x16, 
+            # hence the surface adjustment of ± 8 pixels
+            if xy[0] - 8 <= mouse[0] <= xy[0] + 8 and xy[1] - 8 <= mouse[1] <= xy[1] + 8:
+                display_popup(xy)
+                display_popup_text(canteen, xy)
+                break
+        # if loop does not break
+        else:
+            revert_display(user_location)
+            display_warning(warning)
+
+
+def pygame_main(user_location):
     """Main pygame interface function.
 
     Returns:
@@ -99,23 +161,23 @@ def pygame_main():
     clock = pygame.time.Clock()
 
     # initial values
-    # user_location is set to the bottom right corner of the screen (1600x900) to ensure that it is out of the display initially
-    user_location = (1600, 900)
+    if start == 1:
+        pin_dropped = False
+    else:
+       pin_dropped = True
     ok_button_clicked = False
-    pin_dropped = False
     warning = False
     pygame_running = True
-    force_close = False
 
     while pygame_running:
+        pygame.event.pump()
         for event in pygame.event.get():
             # gets current position of mouse cursor in the form of (X,Y)
             mouse = pygame.mouse.get_pos()
-
-            # break the loop if user closes pygame window
+ 
+            # quit python if user closes pygame window
             if event.type == pygame.QUIT:
-                force_close = True
-                pygame_running = False
+                sys.exit(0)
 
             elif not ok_button_clicked:
                 # detects events of left click only, so that other mouse buttons won't have any effect
@@ -130,11 +192,14 @@ def pygame_main():
                         display_ok_pressed(user_location)
                         display_warning(warning)
 
+                detect_point_hover(user_location, mouse, ok_button_clicked, warning)
+
             # if location has been marked, releasing the left mouse button on the ok button area finalizes the location and ends the pygame program
             elif 1250 <= mouse[0] <= 1555 and 800 <= mouse[1] <= 885:
                 if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     if pin_dropped:
                         pygame_running = False
+                        break
                     # a warning will pop up to ensure the user marks their location before continuing
                     else:
                         ok_button_clicked, warning = False, True
@@ -151,15 +216,18 @@ def pygame_main():
         pygame.display.flip()
         # sets the frame rate limit of the pygame program (per second)
         clock.tick(60)
+
+    # make sure pygame program is properly closed
+    pygame.font.quit()
     pygame.display.quit()
     pygame.quit()
-    if force_close:
-        return None
-    else:
-        return user_location
 
+    return user_location
 
+start = 0
+canteen_coordinates = data.import_canteen_coordinates()
 while True:
+    start += 1
     # initialize pygame program
     pygame.init()
 
@@ -174,6 +242,12 @@ while True:
     ok_location = (1200, 800)
     warning_location = (1150, 750)
     instruction_location = (350, 0)
+    if start == 1:
+        # user_location is set to the bottom right corner of the screen (1600x900),
+        # to ensure that it is out of the display initially
+        user_location = (1600, 900)
+
+    
 
     # load and display images and text
     map_img, pin_img, ok_button_img, ok_pressed_img = load_images()
@@ -184,10 +258,13 @@ while True:
     pygame.display.flip()
 
     # run pygame interface
-    user_location = pygame_main()
+    user_location = pygame_main(user_location)
 
     if user_location:
+        # pass user_location variable to menu.py file
         menu.import_user_location(user_location)
+
+        # run command line interface
         menu.main_menu()
     # if pygame is closed
     else:

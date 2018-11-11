@@ -7,36 +7,46 @@ import csv
 import math
 
 
-def get_canteen_coordinates(canteen):
-    """Gets the coordinates of a canteen from file.
+def import_canteen_coordinates():
+    """Gets data of canteens and their respective coordinates from file.
+    
+    Returns:
+        canteen_coordinates ([str, (int, int)] -> list): List of canteen names and their coordinates.
+    """
+    canteen_coordinates = []
+    with open('data/canteen_coordinates.txt') as csv_file:
+        rows = csv.reader(csv_file)
+        for row in rows:
+            canteen_coordinates.append([row[0], (int(row[1]), int(row[2]))])
+    return canteen_coordinates
+
+
+def get_canteen_coordinates(canteen_coordinates, canteen_name):
+    """Gets the coordinates of a canteen from list.
 
     Args:
-        canteen (str): Canteen name.
+        canteen_coordinates ([str, (int, int)] -> list): List of canteen names and their coordinates.
+        canteen_name (str): Name of canteen.
 
     Returns:
-        int: X coordinates of the canteen on the map.
-        int: Y coordinates of the canteen on the map.
+        coordinates ((int, int) -> tuple): Coordinates of the canteen.
     """
-    with open('data/canteen_coordinates.txt') as coords:
-        rows = csv.reader(coords)
-        for row in rows:
-            if row[0] == canteen:
-                X, Y = row[1:]
-        return int(X), int(Y)
+    for canteen, coordinates in canteen_coordinates:
+        if canteen == canteen_name:
+            return coordinates
 
 
-def distance_a_b(location_of_a, location_of_b):
+def distance_a_b(a, b):
     """Finds the straight distance between two points.
 
     Args:
-        location_of_a ((x, y) -> list or tuple): Location of first point.
-        location_of_b ((x, y) -> list or tuple): Location of second point.
+        a ((x, y) -> list or tuple): Location of first point.
+        b ((x, y) -> list or tuple): Location of second point.
 
     Returns:
         distance_a_b (float): Distance between the two points (distance is measured in pixels).
     """
-    distance_a_b = math.sqrt(
-        (location_of_a[0] - location_of_b[0]) ** 2 + (location_of_a[1] - location_of_b[1]) ** 2)
+    distance_a_b = math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
     return distance_a_b
 
 
@@ -52,21 +62,24 @@ def import_canteen_database(user_location):
     database = {}
     with open('data/canteen_data.txt', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
-        line = 1
+        canteen_coordinates = import_canteen_coordinates()
         for row in csv_reader:
-            # data starts on the second line of the file
-            if line > 1:
-                menus = {}
-                total_price = 0
-                X, Y = get_canteen_coordinates(row[0])
-                distance = distance_a_b(user_location, (X, Y))
-                for i in range(4, len(row), 2):
-                    menus[row[i]] = float(row[i + 1])
-                    total_price += float(row[i + 1])
-                average_price = round(total_price / len(menus), 2)
-                database[(row[0], (X, Y), row[1], row[2])] = [
-                    int(row[3]), average_price, distance, menus]
-            line += 1
+            menus = {}
+            total_price = 0
+
+            # first data on every row is the canteen name
+            X, Y = get_canteen_coordinates(canteen_coordinates, row[0])
+            distance = distance_a_b(user_location, (X, Y))
+
+            # inserting food menu to database
+            # inside the data file, menu starts from row[4] until end of the line
+            for i in range(4, len(row), 2):
+                menus[row[i]] = float(row[i + 1])
+                total_price += float(row[i + 1])
+            average_price = round(total_price / len(menus), 2)
+
+            # create database
+            database[(row[0], (X, Y), row[1], row[2])] = [int(row[3]), average_price, distance, menus]
     return database
 
 
@@ -81,8 +94,9 @@ def get_bus_coordinates(bus_loop):
     """
     bus_coords_list = []
     # data/blue_coordinates.txt or data/red_coordinates.txt
-    with open('data/' + bus_loop + '_coordinates.txt', 'r') as bus_coords:
-        rows = csv.reader(bus_coords)
+    # csv file format: bus_stop,X_coordinate,Y_coordinate
+    with open('data/' + bus_loop + '_coordinates.txt', 'r') as csv_file:
+        rows = csv.reader(csv_file)
         for row in rows:
             bus_coords_list.append([row[0], (int(row[1]), int(row[2]))])
     return bus_coords_list
@@ -90,6 +104,7 @@ def get_bus_coordinates(bus_loop):
 
 def get_bus_nodes(bus_loop):
     """Gets data of bus route node's coordinates from file.
+    The purpose of creating route nodes is to increase the accuracy of travel distance.
 
     Args:
         bus_loop (str): 'red' or 'blue' depending on the loop. Use this for the file name.
@@ -99,10 +114,11 @@ def get_bus_nodes(bus_loop):
     """
     nodes_list = []
     # data/blue_nodes.txt or data/red_nodes.txt
+    # csv file format: X_coordinate,Y_coordinate
     with open('data/' + bus_loop + '_nodes.txt', 'r') as csv_file:
         nodes = csv.reader(csv_file)
         line = 1
-        # the csv file's data format is 'x coordinates,y coordinates'
+        
         for node in nodes:
             if line > 1:
                 nodes_list.append((int(node[0]), int(node[1])))

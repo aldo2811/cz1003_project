@@ -1,5 +1,7 @@
 import csv
+from library.prettytable import PrettyTable
 import module.check as check
+import module.data as data
 
 
 def get_canteen_name():
@@ -97,48 +99,115 @@ def get_stall_category():
     return stall_category
 
 
-def input_data():
+def menu_input_data():
     """Menu for adding new canteen data to the database. Stores the data inside a list.
 
     Returns:
-        entry (list): A list filled with data of a new stall.
+        stall_data (list): A list containing with data of a new stall.
             Format: [canteen_name, stall_name, stall_category, stall_rating, food1, price1, food2, price2, ...]
     """
+    # ask user input for the new stall data
     canteen_name = get_canteen_name()
-    stall_name = input("Enter stall name: ")
+    print("Enter stall name:", end = " ")
+    # stall name cannot be empty
+    stall_name = check.non_empty_input()
     stall_category = get_stall_category()
     print("Enter stall rating (0-5):", end = " ")
     stall_rating = check.user_input_index(0, 5)
-    entry = [canteen_name, stall_name, stall_category, stall_rating]
+
+    # data order is adjusted according to the file
+    stall_data = [canteen_name, stall_name, stall_category, stall_rating]
     menu = 0
+
     while True:
         # user needs to enter at least 1 menu for each stall
+        # food name cannot be empty
         if menu < 1:
-            food_name = input("Enter food name: ")
+            print("Enter food name:", end =" ")
+            food_name = check.non_empty_input()
         else:
-            food_name = input("Enter '####' to terminate, Enter food name: ")
+            print("Enter '####' to terminate, Enter food name:", end = " ")
+            food_name = check.non_empty_input()
             if food_name == "####":
                 break
 
         print("Enter price:", end = " ")
         food_price = check.user_input_float()
-        entry.extend([food_name, food_price])
+        stall_data.extend([food_name, food_price])
         menu += 1
-    entry = [str(data) for data in entry]
-    return entry
+    # convert the data to string to be written to file
+    stall_data = [str(data) for data in stall_data]
+    return stall_data
 
 
-def database_input():
-    """Menu for inputting data.
-    Saves the data to the canteen database file if user inputs it.
+def input_data(stall_data):
+    """Append new data to database file.
+
+    Args:
+        stall_data (list): A list containing data of a new stall.
     """
+    with open("data/canteen_data.txt", 'a', newline='\n') as csv_file:
+        rows = csv.writer(csv_file)
+        rows.writerow(stall_data)
+
+
+def menu_edit_database():
+    """Menu for modifying data."""
     while True:
         print("1: Input data")
+        print("2: Delete data")
         print("0: Back to main menu")
-        option = check.user_input_index(0, 1)
+
+        option = check.user_input_index(0, 2)
         if option == 1:
-            data = ",".join(input_data())
-            with open("data/canteen_data.txt", "a") as csv_file:
-                csv_file.write("\n" + data)
-        elif option == 0:
+            stall_data = menu_input_data()
+            input_data(stall_data)
+        elif option == 2:
+            # get data from file
+            with open("data/canteen_data.txt", "r") as csv_file:
+                list_canteen = list(csv.reader(csv_file))
+            stall_data = menu_delete_data(list_canteen)
+            if stall_data:
+                delete_data(stall_data, list_canteen)
+        else == 0:
             break
+
+
+def menu_delete_data(list_canteen):
+    """Menu for deleting data.
+    
+    Args:
+        list_canteen ([[str, str, str,...]] -> list): List of all stall data imported from csv file.
+            List has the same format as the data in the file.
+    
+    Returns:
+        stall ([str, str, str,...] -> list): List of one stall data.
+            Same format as data in csv file.
+    """
+    # display table so that user can easily select which data to remove
+    table = PrettyTable(['No.', 'Canteen', 'Stall Name', 'Category'])
+    num = 1
+    for canteen in list_canteen:
+        table.add_row([num, canteen[0], canteen[1], canteen[2]])
+        num += 1
+
+    print(table)
+    print("Enter the corresponding number of a stall to delete it.")
+    print("0: Back")
+
+    # allow digit input from 0 to max number of stall
+    user_option = check.user_input_index(0, len(list_canteen))
+    if user_option > 0:
+        stall = list_canteen[user_option - 1]
+        return stall
+    else:
+        return None
+
+
+def delete_data(stall_data, list_canteen):
+    with open("data/canteen_data.txt", "w", newline='\n') as csv_file:
+        writer = csv.writer(csv_file)
+        for data in list_canteen:
+            if data != stall_data:
+                writer.writerow(data)
+

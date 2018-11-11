@@ -30,7 +30,8 @@ def user_input_float():
     try:
         user_input = float(user_input)
         
-        # in this project, only positive floats are needed, that's why negative float values are considered invalid
+        # in this project, only positive float values are needed,
+        # that's why negative float values are considered invalid
         if user_input < 0:
             print("Error! Invalid input!")
             return user_input_float()
@@ -39,3 +40,17 @@ def user_input_float():
     except:
         print("Error! Invalid input!")
         return user_input_float()
+
+
+def non_empty_input():
+    """Checks whether user input is empty or not. (For string)
+
+    Returns:
+        string (str): The input entered by the user.
+        Returns itself and keeps on asking for input if input is empty.
+    """
+    string = input()
+    if not string or string.isspace():
+        print("Invalid input!")
+        return non_empty_input()
+    return string

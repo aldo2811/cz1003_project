@@ -16,8 +16,9 @@ def by_distance(database):
         dict: Canteen database that has been sorted by distance to user.
     """
     # tup[1][2] refers to distance from canteen to user
-    sort_info = sorted(database.items(), key=lambda tup: tup[1][2])
-    return convert.list_to_dict(sort_info)
+    sorted_distance = sorted(database.items(), key=lambda tup: tup[1][2])
+    # convert back to dictionary (database format)
+    return convert.list_to_dict(sorted_distance)
 
 
 def by_rank(database):
@@ -31,8 +32,9 @@ def by_rank(database):
     """
     # tup[1][0] refers to stall rating
     # order is reversed as it sorts rating descending, from highest to lowest
-    rank = sorted(database.items(), key=lambda tup: tup[1][0], reverse=True)
-    return convert.list_to_dict(rank)
+    sorted_rank = sorted(database.items(), key=lambda tup: tup[1][0], reverse=True)
+    # convert back to dictionary (database format)
+    return convert.list_to_dict(sorted_rank)
 
 
 def by_category(database):
@@ -45,8 +47,9 @@ def by_category(database):
         dict: Canteen database that has been sorted by category.
     """
     # tup[0][3] refers to category
-    category = sorted(database.items(), key=lambda tup: tup[0][3])
-    return convert.list_to_dict(category)
+    sorted_category = sorted(database.items(), key=lambda tup: tup[0][3])
+    # convert back to dictionary (database format)
+    return convert.list_to_dict(sorted_category)
 
 
 def by_price(database):
@@ -59,5 +62,6 @@ def by_price(database):
         dict: Canteen database that has been sorted by price.
     """
     # tup[1][1] refers to average price
-    sortedprice = sorted(database.items(), key=lambda tup: tup[1][1])
-    return convert.list_to_dict(sortedprice)
+    sorted_price = sorted(database.items(), key=lambda tup: tup[1][1])
+    # convert back to dictionary (database format)
+    return convert.list_to_dict(sorted_price)
