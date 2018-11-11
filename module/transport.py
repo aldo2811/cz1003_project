@@ -5,6 +5,7 @@ database value data format: [stall_rating, average_price, distance_to_user, {men
 
 import module.data as data
 import module.convert as convert
+import pygame
 
 
 def nearest_bus_stop(location, bus_stop_coords):
@@ -132,6 +133,8 @@ def display_directions(stall, user_location):
         # find total travel distance from user to canteen for both bus loops
         red_travel_distance = red_bus_distance + sum(red_walk_distance)
         blue_travel_distance = blue_bus_distance + sum(blue_walk_distance)
+
+        pygame_bus_route(blue_route, red_route, user_location, canteen_location)
 
         # shows the two loops if both loops' total number of bus stops are different within 1 stop
         # e.g. blue: 6 stops, red: 7 stops
@@ -261,3 +264,52 @@ def walk_distance(user_location, canteen_location, bus_route):
     distance_bus_stop_user = convert.pixel_to_meter(distance_bus_stop_user)
     distance_bus_stop_canteen = convert.pixel_to_meter(distance_bus_stop_canteen)
     return distance_bus_stop_user, distance_bus_stop_canteen
+
+
+def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
+    blue_nodes = get_route_nodes(blue_route, 'blue')
+    red_nodes = get_route_nodes(red_route, 'red')
+
+    pygame.init()
+    screen = pygame.display.set_mode((1600, 900))
+    pygame.display.set_caption('Bus Routes')
+
+    map_img = pygame.image.load("image_files/map.png")
+    map_img = pygame.transform.scale(map_img, (1600, 900))
+    pin_img = pygame.image.load("image_files/pin.png")
+    point_img = pygame.image.load("image_files/point.png")
+    red_img = pygame.image.load("image_files/red.png")
+    blue_img = pygame.image.load("image_files/blue.png")
+
+    text_font = pygame.font.SysFont('calibri', 32)
+    text = text_font.render("Click 'X' to exit", False, (0, 0, 0))
+    text_rect = text.get_rect()
+    text_rect.center = (800, 25)
+
+    user_display_location = [i-16 for i in user_location]
+    canteen_display_location = [j-8 for j in canteen_location]
+    screen.blit(map_img, (0, 0))
+    screen.blit(text, text_rect)
+    screen.blit(pin_img, user_display_location)
+    screen.blit(point_img, canteen_display_location)
+
+    for bus_stop, xy in red_route:
+        xy = [i-4 for i in xy]
+        screen.blit(red_img, xy)
+    for bus_stop, xy in blue_route:
+        xy = [j-4 for j in xy]
+        screen.blit(blue_img, xy)
+
+    pygame.draw.aalines(screen, (0, 0, 255), False, blue_nodes)
+    pygame.draw.aalines(screen, (255, 0, 0), False, red_nodes)
+    pygame.display.flip()
+
+    display_running = True
+    while display_running:
+        for event in pygame.event.get():
+            pygame.display.flip()
+            if event.type == pygame.QUIT:
+                display_running = False
+
+    pygame.display.quit()
+    pygame.quit()

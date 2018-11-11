@@ -1,6 +1,6 @@
 from library.prettytable import PrettyTable
 import pygame
-import sys
+import os
 import module.menu as menu
 import module.data as data
 
@@ -19,7 +19,9 @@ def load_images():
     pin_img = pygame.image.load("image_files/pin.png")
     ok_button_img = pygame.image.load("image_files/ok_button.png")
     ok_pressed_img = pygame.image.load("image_files/ok_button_pressed.png")
-    return map_img, pin_img, ok_button_img, ok_pressed_img
+    red_img = pygame.image.load("image_files/red.png")
+    blue_img = pygame.image.load("image_files/blue.png")
+    return map_img, pin_img, ok_button_img, ok_pressed_img, red_img, blue_img
 
 
 def load_text():
@@ -33,6 +35,19 @@ def load_text():
     warning_text = instruction_font.render('Please mark your location!', False, (255, 0, 0))
     instruction_text = instruction_font.render('Please mark your location and click the ok button to continue.', False, (0, 0, 0))
     return warning_text, instruction_text
+
+
+def display_background():
+    red_stops = data.get_bus_coordinates('red')
+    blue_stops = data.get_bus_coordinates('blue')
+    screen.blit(map_img, background_location)
+    screen.blit(instruction_text, instruction_location)
+    for bus_stop, xy in red_stops:
+        xy = [i-4 for i in xy]
+        screen.blit(red_img, xy)
+    for bus_stop, xy in blue_stops:
+        xy = [j-4 for j in xy]
+        screen.blit(blue_img, xy)
 
 
 def get_user_location(mouse):
@@ -49,8 +64,7 @@ def get_user_location(mouse):
     # there's an offset of '-16' to adjust the pin image with the cursor
     display_location = [user_location[i] - 16 for i in range(2)]
 
-    screen.blit(map_img, background_location)
-    screen.blit(instruction_text, instruction_location)
+    display_background()
     screen.blit(ok_button_img, ok_location)
     screen.blit(pin_img, display_location)
     return user_location
@@ -66,8 +80,8 @@ def display_ok_pressed(user_location):
     # display adjustment
     display_location = [user_location[i] - 16 for i in range(2)]
 
-    screen.blit(map_img, background_location)
-    screen.blit(instruction_text, instruction_location)
+    display_background()
+    
     screen.blit(pin_img, display_location)
     screen.blit(ok_pressed_img, ok_location)
 
@@ -81,8 +95,8 @@ def revert_display(user_location):
     # display adjustment
     display_location = [user_location[i] - 16 for i in range(2)]
 
-    screen.blit(map_img, background_location)
-    screen.blit(instruction_text, instruction_location)
+    display_background()
+    
     screen.blit(pin_img, display_location)
     screen.blit(ok_button_img, ok_location)
 
@@ -177,7 +191,7 @@ def pygame_main(user_location):
  
             # quit python if user closes pygame window
             if event.type == pygame.QUIT:
-                sys.exit(0)
+                os._exit(1)
 
             elif not ok_button_clicked:
                 # detects events of left click only, so that other mouse buttons won't have any effect
@@ -212,7 +226,6 @@ def pygame_main(user_location):
                 ok_button_clicked = False
                 revert_display(user_location)
                 display_warning(warning)
-
         pygame.display.flip()
         # sets the frame rate limit of the pygame program (per second)
         clock.tick(60)
@@ -250,10 +263,10 @@ while True:
     
 
     # load and display images and text
-    map_img, pin_img, ok_button_img, ok_pressed_img = load_images()
+    map_img, pin_img, ok_button_img, ok_pressed_img, red_img, blue_img = load_images()
     warning_text, instruction_text = load_text()
-    screen.blit(map_img, background_location)
-    screen.blit(instruction_text, instruction_location)
+    display_background()
+    
     screen.blit(ok_button_img, ok_location)
     pygame.display.flip()
 

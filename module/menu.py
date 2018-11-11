@@ -11,7 +11,7 @@ import module.search as search
 import module.sort as sort
 import module.transport as transport
 from library.prettytable import PrettyTable
-import sys
+import os
 
 
 def import_user_location(location):
@@ -56,7 +56,7 @@ def main_menu():
         return None
     else:
         # exit python
-        sys.exit(0)
+        os._exit(1)
 
     if search_result:
         display_table(search_result)

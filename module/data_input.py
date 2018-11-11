@@ -169,7 +169,7 @@ def menu_edit_database():
             stall_data = menu_delete_data(list_canteen)
             if stall_data:
                 delete_data(stall_data, list_canteen)
-        else == 0:
+        else:
             break
 
 
