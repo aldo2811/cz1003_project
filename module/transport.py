@@ -54,8 +54,7 @@ def route(bus_stop_coords, start, end):
     if end_index >= start_index:
         bus_route = bus_stop_coords[start_index:end_index + 1]
     else:
-        bus_route = bus_stop_coords[start_index:] + \
-            bus_stop_coords[:end_index + 1]
+        bus_route = bus_stop_coords[start_index:] + bus_stop_coords[:end_index + 1]
     return bus_route
 
 
@@ -73,14 +72,11 @@ def directions(canteen_location, user_location, distance_user_canteen, bus_stop_
         bus_route ([[str, (int, int)]] -> list): List of bus stops with their respective coordinates,
             starting from the starting bus stop to the destination.
     """
-    nearest_bus_stop_canteen, distance_bus_stop_canteen = nearest_bus_stop(
-        canteen_location, bus_stop_coords)
-    nearest_bus_stop_user, distance_bus_stop_user = nearest_bus_stop(
-        user_location, bus_stop_coords)
+    nearest_bus_stop_canteen, distance_bus_stop_canteen = nearest_bus_stop(canteen_location, bus_stop_coords)
+    nearest_bus_stop_user, distance_bus_stop_user = nearest_bus_stop(user_location, bus_stop_coords)
 
     # find the bus route from user to canteen
-    bus_route = route(bus_stop_coords, nearest_bus_stop_user,
-                      nearest_bus_stop_canteen)
+    bus_route = route(bus_stop_coords, nearest_bus_stop_user, nearest_bus_stop_canteen)
 
     if distance_user_canteen <= distance_bus_stop_user or len(bus_route) <= 1:
         walk = True
@@ -108,16 +104,16 @@ def display_directions(stall, user_location):
 
     # for each loop, check whether the user can walk straight to the canteen,
     # and find the bus route from user position to canteen
-    red_walk, red_route = directions(
-        canteen_location, user_location, distance_user_canteen, red_loop)
-    blue_walk, blue_route = directions(
-        canteen_location, user_location, distance_user_canteen, blue_loop)
+    red_walk, red_route = directions(canteen_location, user_location, distance_user_canteen, red_loop)
+    blue_walk, blue_route = directions(canteen_location, user_location, distance_user_canteen, blue_loop)
+
+    # display route in pygame
+    pygame_bus_route(blue_route, red_route, user_location, canteen_location)
 
     str_list = ["Recommended Routes\n"]
     if red_walk or blue_walk:
         distance_meters = convert.pixel_to_meter(distance_user_canteen)
-        str_list.extend(["\nYou are near to the canteen. Walk straight ahead. (", str(
-            distance_meters), " m)"])
+        str_list.extend(["\nYou are near to the canteen. Walk straight ahead. (", str(distance_meters), " m)"])
     else:
         # find total bus distance from user to canteen for the 2 bus loops
         red_bus_distance = bus_distance(red_route, 'red')
@@ -125,16 +121,12 @@ def display_directions(stall, user_location):
 
         # for each bus loop, find straight walking distance from user to starting bus stop,
         # and from end bus stop to canteen
-        red_walk_distance = walk_distance(
-            user_location, canteen_location, red_route)
-        blue_walk_distance = walk_distance(
-            user_location, canteen_location, blue_route)
+        red_walk_distance = walk_distance(user_location, canteen_location, red_route)
+        blue_walk_distance = walk_distance(user_location, canteen_location, blue_route)
 
         # find total travel distance from user to canteen for both bus loops
         red_travel_distance = red_bus_distance + sum(red_walk_distance)
         blue_travel_distance = blue_bus_distance + sum(blue_walk_distance)
-
-        pygame_bus_route(blue_route, red_route, user_location, canteen_location)
 
         # shows the two loops if both loops' total number of bus stops are different within 1 stop
         # e.g. blue: 6 stops, red: 7 stops
@@ -143,19 +135,15 @@ def display_directions(stall, user_location):
             # blue loop route
             str_list.append("\nBlue Loop\n\n")
             str_list.extend(display_bus_route(blue_route, blue_walk_distance))
-            str_list.extend(["\nTotal bus distance: ",
-                             str(blue_bus_distance), " m"])
-            str_list.extend(["\nTotal travel distance: ",
-                             str(blue_travel_distance), " m"])
+            str_list.extend(["\nTotal bus distance: ", str(blue_bus_distance), " m"])
+            str_list.extend(["\nTotal travel distance: ", str(blue_travel_distance), " m"])
 
         if len(red_route) <= len(blue_route) + 1:
             # red loop route
             str_list.append("\nRed Loop\n\n")
             str_list.extend(display_bus_route(red_route, red_walk_distance))
-            str_list.extend(["\nTotal bus distance: ",
-                             str(red_bus_distance), " m"])
-            str_list.extend(["\nTotal travel distance: ",
-                             str(red_travel_distance), " m"])
+            str_list.extend(["\nTotal bus distance: ", str(red_bus_distance), " m"])
+            str_list.extend(["\nTotal travel distance: ", str(red_travel_distance), " m"])
     return "".join(str_list)
 
 
@@ -175,13 +163,11 @@ def display_bus_route(bus_route, walk_distance):
     # not exactly an arrow, but its purpose is similar,
     # to separate the bus stops and make the route look like a sequence
     str_arrow = "\n|\n"
-    str_list = ["Walk to ", bus_route[0][0],
-                " bus stop and board the bus. (", str(walk_to_bus), " m)", str_arrow]
+    str_list = ["Walk to ", bus_route[0][0], " bus stop and board the bus. (", str(walk_to_bus), " m)", str_arrow]
     for bus_stop in bus_route:
         str_list.extend([bus_stop[0], str_arrow])
 
-    str_list.extend(
-        ["Walk straight ahead to the canteen. (", str(walk_to_canteen), " m)\n"])
+    str_list.extend(["Walk straight ahead to the canteen. (", str(walk_to_canteen), " m)\n"])
     return str_list
 
 
@@ -206,7 +192,7 @@ def get_route_nodes(bus_route, bus_loop):
 
     # arrange route nodes such that it starts from the starting bus stop,
     # and ends with the destination bus stop
-    if end_index > start_index:
+    if end_index >= start_index:
         route_nodes = bus_nodes[start_index:end_index + 1]
     else:
         route_nodes = bus_nodes[start_index:] + bus_nodes[:end_index + 1]
@@ -256,10 +242,8 @@ def walk_distance(user_location, canteen_location, bus_route):
 
     # find straight walking distance from user to starting bus stop,
     # and from end bus stop to canteen, in pixels
-    distance_bus_stop_user = data.distance_a_b(
-        start_coordinates, user_location)
-    distance_bus_stop_canteen = data.distance_a_b(
-        end_coordinates, canteen_location)
+    distance_bus_stop_user = data.distance_a_b(start_coordinates, user_location)
+    distance_bus_stop_canteen = data.distance_a_b(end_coordinates, canteen_location)
 
     distance_bus_stop_user = convert.pixel_to_meter(distance_bus_stop_user)
     distance_bus_stop_canteen = convert.pixel_to_meter(distance_bus_stop_canteen)
@@ -267,6 +251,14 @@ def walk_distance(user_location, canteen_location, bus_route):
 
 
 def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
+    """Displays route in pygame.
+
+    Args:
+        blue_route ([str, (int, int)] -> list): Route of blue loop from user to canteen.
+        red_route ([str, (int, int)] -> list): Route of red loop from user to canteen.
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
+        canteen_location ((int, int) -> tuple): Canteen coordinates.
+    """
     blue_nodes = get_route_nodes(blue_route, 'blue')
     red_nodes = get_route_nodes(red_route, 'red')
 
@@ -274,6 +266,7 @@ def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
     screen = pygame.display.set_mode((1600, 900))
     pygame.display.set_caption('Bus Routes')
 
+    # load images
     map_img = pygame.image.load("image_files/map.png")
     map_img = pygame.transform.scale(map_img, (1600, 900))
     pin_img = pygame.image.load("image_files/pin.png")
@@ -281,11 +274,13 @@ def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
     red_img = pygame.image.load("image_files/red.png")
     blue_img = pygame.image.load("image_files/blue.png")
 
+    # load text
     text_font = pygame.font.SysFont('calibri', 32)
     text = text_font.render("Click 'X' to exit", False, (0, 0, 0))
     text_rect = text.get_rect()
     text_rect.center = (800, 25)
 
+    # display images and text
     user_display_location = [i-16 for i in user_location]
     canteen_display_location = [j-8 for j in canteen_location]
     screen.blit(map_img, (0, 0))
@@ -300,14 +295,19 @@ def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
         xy = [j-4 for j in xy]
         screen.blit(blue_img, xy)
 
-    pygame.draw.aalines(screen, (0, 0, 255), False, blue_nodes)
-    pygame.draw.aalines(screen, (255, 0, 0), False, red_nodes)
+    # draw route as a line for each bus loop
+    # only draw line if using bus
+    if len(blue_nodes) > 1:
+        pygame.draw.aalines(screen, (0, 0, 255), False, blue_nodes)
+    if len(red_nodes) > 1:
+        pygame.draw.aalines(screen, (255, 0, 0), False, red_nodes)
     pygame.display.flip()
 
     display_running = True
     while display_running:
         for event in pygame.event.get():
             pygame.display.flip()
+            # closes window if user presses exit window button
             if event.type == pygame.QUIT:
                 display_running = False
 

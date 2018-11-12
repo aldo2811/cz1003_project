@@ -126,6 +126,7 @@ def menu_input_data():
             print("Enter food name:", end =" ")
             food_name = check.non_empty_input()
         else:
+            # user can input '####' if they want to stop adding menu
             print("Enter '####' to terminate, Enter food name:", end = " ")
             food_name = check.non_empty_input()
             if food_name == "####":
@@ -205,6 +206,7 @@ def menu_delete_data(list_canteen):
 
 
 def delete_data(stall_data, list_canteen):
+    """Delete data chosen by user by rewriting all data except for the chosen stall."""
     with open("data/canteen_data.txt", "w", newline='\n') as csv_file:
         writer = csv.writer(csv_file)
         for data in list_canteen:

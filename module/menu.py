@@ -203,6 +203,8 @@ def display_info(database, stall):
     distance = convert.pixel_to_meter(value[2])
     distance = " ".join([str(distance), "m"])
     menu = display_food_menu(value[3])
+
+    # displays directions in pygame and command line
     directions = transport.display_directions(stall, user_location)
 
     # create table object
