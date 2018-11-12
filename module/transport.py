@@ -95,17 +95,20 @@ def display_directions(stall, user_location):
     Returns:
         str: String of directions that will be displayed on the stall information.
     """
+    # declare global to minimize use of parameters
+    global red_coordinates
+    global blue_coordinates
     # get data of red and blue bus stop coordinates
-    red_loop = data.get_bus_coordinates('red')
-    blue_loop = data.get_bus_coordinates('blue')
+    red_coordinates = data.get_bus_coordinates('red')
+    blue_coordinates = data.get_bus_coordinates('blue')
 
     canteen_location = stall[0][1]
     distance_user_canteen = stall[1][2]
 
     # for each loop, check whether the user can walk straight to the canteen,
     # and find the bus route from user position to canteen
-    red_walk, red_route = directions(canteen_location, user_location, distance_user_canteen, red_loop)
-    blue_walk, blue_route = directions(canteen_location, user_location, distance_user_canteen, blue_loop)
+    red_walk, red_route = directions(canteen_location, user_location, distance_user_canteen, red_coordinates)
+    blue_walk, blue_route = directions(canteen_location, user_location, distance_user_canteen, blue_coordinates)
 
     # display route in pygame
     pygame_bus_route(blue_route, red_route, user_location, canteen_location)
@@ -250,21 +253,18 @@ def walk_distance(user_location, canteen_location, bus_route):
     return distance_bus_stop_user, distance_bus_stop_canteen
 
 
-def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
-    """Displays route in pygame.
-
-    Args:
-        blue_route ([str, (int, int)] -> list): Route of blue loop from user to canteen.
-        red_route ([str, (int, int)] -> list): Route of red loop from user to canteen.
-        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
-        canteen_location ((int, int) -> tuple): Canteen coordinates.
+def initialize_var():
+    """Declares screen, images and text as global variables.
+    So that it is not needed to keep passing all these variables.
     """
-    blue_nodes = get_route_nodes(blue_route, 'blue')
-    red_nodes = get_route_nodes(red_route, 'red')
-
-    pygame.init()
+    global screen
+    global map_img
+    global pin_img
+    global point_img
+    global red_img
+    global blue_img
+    global text
     screen = pygame.display.set_mode((1600, 900))
-    pygame.display.set_caption('Bus Routes')
 
     # load images
     map_img = pygame.image.load("image_files/map.png")
@@ -277,25 +277,86 @@ def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
     # load text
     text_font = pygame.font.SysFont('calibri', 32)
     text = text_font.render("Click 'X' to exit", False, (0, 0, 0))
-    text_rect = text.get_rect()
-    text_rect.center = (800, 25)
 
+
+def display_background_image(user_location, canteen_location):
+    """Display background map image.
+    
+    Args:
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by user.
+        canteen_location ((int, int) -> tuple): Canteen coordinates.
+    """
     # display images and text
     user_display_location = [i-16 for i in user_location]
     canteen_display_location = [j-8 for j in canteen_location]
     screen.blit(map_img, (0, 0))
+    # set text position
+    text_rect = text.get_rect()
+    text_rect.center = (800, 25)
     screen.blit(text, text_rect)
     screen.blit(pin_img, user_display_location)
     screen.blit(point_img, canteen_display_location)
 
-    for bus_stop, xy in red_route:
+    # display bus stop points
+    for bus_stop, xy in red_coordinates:
         xy = [i-4 for i in xy]
         screen.blit(red_img, xy)
-    for bus_stop, xy in blue_route:
+    for bus_stop, xy in blue_coordinates:
         xy = [j-4 for j in xy]
         screen.blit(blue_img, xy)
 
-    # draw route as a line for each bus loop
+
+def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
+    """Displays route in pygame.
+
+    Args:
+        blue_route ([[str, (int, int)]] -> list): Route of blue loop from user to canteen.
+        red_route ([[str, (int, int)]] -> list): Route of red loop from user to canteen.
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by the user.
+        canteen_location ((int, int) -> tuple): Canteen coordinates.
+    """
+    blue_nodes = get_route_nodes(blue_route, 'blue')
+    red_nodes = get_route_nodes(red_route, 'red')
+
+    # initialize pygame
+    pygame.init()
+    
+    # set window title
+    pygame.display.set_caption('Bus Routes')
+
+    # initialize global variables
+    initialize_var()
+
+    # display background map
+    display_background_image(user_location, canteen_location)
+
+
+    display_running = True
+    while display_running:
+        for event in pygame.event.get():
+            mouse = pygame.mouse.get_pos()
+            
+            blue_hover = detect_bus_hover(user_location, canteen_location, mouse, blue_coordinates, 'blue', blue_nodes, red_nodes)
+            # if user hovers on blue bus stop, no need to check red
+            if not blue_hover:
+                red_hover = detect_bus_hover(user_location, canteen_location, mouse, red_coordinates, 'red', blue_nodes, red_nodes)
+            pygame.display.flip()
+            # closes window if user presses exit window button
+            if event.type == pygame.QUIT:
+                display_running = False
+
+    # ensure pygame is closed properly
+    pygame.display.quit()
+    pygame.quit()
+
+
+def draw_line(blue_nodes, red_nodes):
+    """Draw route as a line for each bus loop.
+
+    Args:
+        blue_nodes ([[int, int]] -> list): List of nodes along the travel route (blue loop).
+        red_nodes ([[int, int]] -> list): List of nodes along the travel route (red loop).
+    """
     # only draw line if using bus
     if len(blue_nodes) > 1:
         pygame.draw.aalines(screen, (0, 0, 255), False, blue_nodes)
@@ -303,13 +364,60 @@ def pygame_bus_route(blue_route, red_route, user_location, canteen_location):
         pygame.draw.aalines(screen, (255, 0, 0), False, red_nodes)
     pygame.display.flip()
 
-    display_running = True
-    while display_running:
-        for event in pygame.event.get():
-            pygame.display.flip()
-            # closes window if user presses exit window button
-            if event.type == pygame.QUIT:
-                display_running = False
 
-    pygame.display.quit()
-    pygame.quit()
+def display_popup(coordinates, bus_loop):
+    """Displays pop-up box.
+    
+    Args:
+        coordinates ((int, int) -> tuple): Bus stop coordinates.
+        bus_loop (str): 'red' or 'blue' to differentiate between the bus loops.
+    """
+    x, y = coordinates
+    if bus_loop == 'red':
+        pygame.draw.rect(screen, (255, 0, 0), [x-70, y-30, 140, 20])
+    elif bus_loop == 'blue':
+        pygame.draw.rect(screen, (0, 0, 255), [x-70, y-30, 140, 20])
+
+    
+def display_popup_text(bus_stop, coordinates):
+    """Displays bus stop name on the pop-up box.
+    
+    Args:
+        bus_stop (str): Bus stop name.
+        coordinates ((int, int) -> tuple): Bus stop coordinates.
+    """
+    x, y = coordinates
+    # create font object of pop-up
+    # initialize only when needed, to prevent it from causing errors
+    popup_font = pygame.font.SysFont('calibri', 12)
+    popup_text = popup_font.render(bus_stop, False, (255, 255, 255))
+
+    # assign center location of text to align it with the pop-up box
+    text_rect = popup_text.get_rect()
+    text_rect.center = (x, y - 20)
+    screen.blit(popup_text, text_rect)
+
+
+def detect_bus_hover(user_location, canteen_location, mouse, bus_coordinates, bus_loop, blue_nodes, red_nodes):
+    """Detects event of user hovering their mouse cursor over the bus stops.
+
+    Args:
+        user_location ((int, int) -> tuple): Coordinates of location that is marked by user.
+        canteen_location ((int, int) -> tuple): Canteen coordinates.
+        mouse ((int, int) -> tuple): Current coordinates of mouse cursor.
+        bus_coordinates ([[str, (int, int)]] -> list): Names of bus stops and their coordinates.
+        bus_loop (str): 'red' or 'blue' to differentiate between the bus loops.
+        blue_nodes ([[int, int]] -> list): List of nodes along the travel route (blue loop).
+        red_nodes ([[int, int]] -> list): List of nodes along the travel route (red loop).
+    """
+    for bus_stop, xy in bus_coordinates:
+        # size of each bus stop point is 8x8, 
+        # hence the surface adjustment of ± 4 pixels
+        if xy[0] - 4 <= mouse[0] <= xy[0] + 4 and xy[1] - 4 <= mouse[1] <= xy[1] + 4:
+            display_popup(xy, bus_loop)
+            display_popup_text(bus_stop, xy)
+            return True
+    # if loop does not break
+    else:
+        display_background_image(user_location, canteen_location)
+        draw_line(blue_nodes, red_nodes)

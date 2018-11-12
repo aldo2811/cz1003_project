@@ -2,11 +2,11 @@ Opposite Hall 10 & 11,1232,355
 Opposite Hall 8 & 9,1004,433
 Hall 6,869,641
 Opposite Hall 4 & 5,674,836
-Opposite Innovation Centre,453,785
+Opposite Innov. Centre,453,785
 SPMS,318,641
 Opposite WKW,225,555
 Opposite CEE,383,338
-Opposite Lee Wee Nam Library,578,334
+Opposite LWN Library,578,334
 Opposite Hall 3 & 16,698,221
 Opposite Hall 14 & 15,885,153
 Opposite Hall 23,1104,188

@@ -1,11 +1,11 @@
 Grad Hall & Hall 11,1244,246
 Hall 23,1110,203
 Hall 12 & 13,773,165
-Lee Wee Nam Library,593,355
+LWN Library,593,355
 School of Biological Sciences,334,429
 School of Comms Studies,237,563
 Hall 7,260,763
-Innovation Centre,463,755
+Innov. Centre,463,755
 Hall 4,652,801
 Hall 1,824,790
 Canteen 2,862,547

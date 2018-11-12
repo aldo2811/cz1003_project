@@ -118,7 +118,7 @@ def display_popup(coordinates):
         coordinates ((int, int) -> tuple): Canteen coordinates.
     """
     x, y = coordinates
-    pygame.draw.rect(screen, (0, 0, 150), [x-60, y-30, 120, 20])
+    pygame.draw.rect(screen, (0, 255, 0), [x-60, y-30, 120, 20])
 
 
 def display_popup_text(canteen, coordinates):

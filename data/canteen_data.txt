@@ -7,7 +7,6 @@ Canteen 2,Chicken Rice,Singaporean,5,Lemon Chicken Rice,5,Roasted Chicken Rice,3
 Canteen 13,Mixed Rice,Chinese,3,Rice Bowl,4,Beans,3,Fried Eggplant,6
 Canteen 13,Western,Western,4,Carbonara,7,Chop Set,6,Fries,3
 Canteen 13,Indian,Indian,4,Curry,6,Rice Set,3,Paneer Curry,6
-Canteen 9,Chinese Stall,Chinese,5,Stir Fried Rice,5,Honey Potato,6,Chilli Noodles,4
 Canteen 9,Indian Stall,Indian,3,Butter Chicken,6,Biryani,5,Prata,3
 Canteen 9,Western,Western,3,Bacon Pasta,6,Cheesy Fries,4,Roast Chicken,5
 Canteen 11,Chicken Rice,Singaporean,4,Lemon Chicken Rice,4,Roasted Chicken Rice,2,Steamed Chicken Rice,2
@@ -33,4 +32,4 @@ Koufu,Japanese Food,Japanese,5,Curry Rice,4,Egg Rice,4,Katsu Rice,6
 Koufu,Salad,Western,4,Chicken Salad,6,Caesar Salad,5,Mixed Salad,8
 Quad Cafe,Korean,Korean,3,Bulgogi,4,Kimchi Set,5,Hotplate Pork,7
 Quad Cafe,Toast Set,Western,3,Pancake,5,Waffles,7,Scrambled Eggs,4
-Quad Cafe,Western Stall,Western,3,Rosti,4,Bratwurst Set,6,Pork Wrap,7
+North Spine Food Court,1,Halal,1,1,1.0
